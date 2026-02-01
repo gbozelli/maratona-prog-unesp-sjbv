@@ -1,86 +1,60 @@
-# Solution: Remove Element
+# removeElement
 
-## Problem Description
+Remove all instances of a value in-place and return the new length.
 
-Remove all occurrences of a specific value (`val`) from an array (`nums`) **in-place**, returning the number of elements that are not equal to `val`.
+Problem
 
-## Algorithmic Approach
+- Given an array `nums` and a value `val`, remove all instances of `val` in-place.
+- The order of elements can be changed. You should not allocate extra space for another array.
 
-The solution implements the **two-pointer** technique with in-place modification, avoiding allocation of auxiliary data structures.
+Examples
 
-### Algorithm Mechanics
+- Input: nums = [3,2,2,3], val = 3
 
-The algorithm maintains two pointers:
-- **`i`**: iterative pointer that traverses the array sequentially
-- **`n`**: dynamic upper bound that compacts valid space as elements are removed
+  - Output length: 2
+  - Modified array prefix: [2,2]
 
-**Operation Logic:**
+- Input: nums = [0,1,2,2,3,0,4,2], val = 2
+  - Output length: 5
+  - Modified array prefix: [0,1,3,0,4]
 
-1. While `i < n`:
-   - If `nums[i] == val`: perform in-place swap with the element at index `n-1` and decrement `n`
-   - Otherwise: increment `i` to advance the verification window
+Constraints
 
-2. Return `n`: quantity of retained elements (the first k elements of the array)
+- Do the removals in-place with O(1) extra memory.
 
-This approach ensures that all elements equal to `val` are displaced to the final positions of the original array, leaving the first `k` elements with the desired values.
+Approaches
 
-## Complexity Analysis
+- Two pointers (stable order):
 
-### Time Complexity
+  - `i` tracks the position to write the next kept element.
+  - `j` scans the array.
+  - If `nums[j] != val`, write `nums[i] = nums[j]` and `i++`.
+  - Return `i`.
 
-**T(n) = O(n)**
+- Swap-with-end (when order doesn't matter):
+  - Use `i` from start and `n` as the current array end.
+  - If `nums[i] == val`, swap with `nums[n-1]` and decrement `n`.
+  - Else `i++`.
+  - Finish when `i >= n`. Return `n`.
 
-- Each element is visited at most once by pointer `i`
-- Elementary operations (comparison, assignment, arithmetic) execute in constant time
-- No nested iterations or recursive structures
+Complexity
 
-### Space Complexity
+- Time: O(n).
+- Space: O(1).
 
-**S(n) = O(1)**
+Tips and reminders (in my style)
 
-- Constant auxiliary space: only scalar variables (`i`, `n`)
-- In-place modification: uses the input array itself as working buffer
-- No allocation of dynamic structures (lists, queues, stacks, etc.)
+- If order matters, use the write-pointer approach.
+- If order can change and you want fewer writes, swap-with-end is neat.
+- Dry-run small examples to feel the pointer movement.
 
-## Technical Characteristics
-
-| Aspect | Description |
-|--------|-------------|
-| **Paradigm** | Iterative with two-pointer |
-| **Strategy** | Partition-like (similar to QuickSort partition algorithm) |
-| **Modification** | In-place (no new array created) |
-| **Stability** | Non-stable (relative order not preserved) |
-| **Memory Access** | Sequential (cache-friendly) |
-
-## Execution Example
+Small code sketch (pseudocode - write-pointer)
 
 ```
-Input: nums = [0, 1, 2, 2, 3, 0, 4, 2], val = 2
-Output: k = 5, nums[:5] = [0, 1, 3, 0, 4]
-
-Step-by-step:
-i=0: nums[0]=0 ≠ 2, i++ → i=1
-i=1: nums[1]=1 ≠ 2, i++ → i=2
-i=2: nums[2]=2 = 2, swap(nums[2], nums[7]), n-- → n=7
-i=2: nums[2]=2 = 2, swap(nums[2], nums[6]), n-- → n=6
-i=2: nums[2]=4 ≠ 2, i++ → i=3
-i=3: nums[3]=2 = 2, swap(nums[3], nums[5]), n-- → n=5
-i=3: nums[3]=0 ≠ 2, i++ → i=4
-i=4: i=4 ≥ n=5, terminates
+i = 0
+for j in 0...nums.length-1
+  if nums[j] != val
+    nums[i] = nums[j]
+    i += 1
+return i
 ```
-
-## Optimality
-
-The solution is **optimal** in theoretical sense:
-
-- **Temporal lower bound**: Ω(n) — necessary to examine each element at least once
-- **Maximum space efficiency**: O(1) — no auxiliary structures
-- **Alignment with bounds**: T(n) = Θ(n) and S(n) = O(1) indicate asymptotically efficient implementation
-
-## Variations and Context
-
-This approach is used in problem variations such as:
-- Duplicate removal
-- Zero movement/partitioning
-- Array partitioning schemes
-- In-place compaction problems
